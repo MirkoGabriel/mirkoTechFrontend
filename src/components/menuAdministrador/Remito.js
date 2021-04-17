@@ -73,7 +73,7 @@ export default class Remito extends Component {
                 // do stuff
                 console.log(res);
                 swal({
-                    title: 'Remito Ingresada',
+                    title: 'Remito Ingresado',
                     text: 'Desea imprimir ?',
                     icon: "success",
                     buttons: ['No', 'Si']
@@ -438,7 +438,7 @@ export default class Remito extends Component {
                                                                 </button>
                                                             </form>
 
-                                                            <Link className="btn btn-danger btn-lg" to="/menuAdministrador" >Exit</Link>
+                                                            <Link className="btn btn-danger btn-lg" to="/listRemito" >Exit</Link>
                                                         </div>
                                                     </div>
                                                 </div>

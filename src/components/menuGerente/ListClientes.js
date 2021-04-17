@@ -10,52 +10,40 @@ const cookies = new Cookies()
 export default class ListClientes extends Component {
     state = {
         clientes: [],
-        clientesAux: []
+        nombreCliente: ''
     }
-    //carga en el arrayGroup definido en el estado los grupos y ponerlos en el select para filtrar
+    
     async componentDidMount() {
         this.getClientes();
     }
 
-    //filtrar materias por group CAMBIAR!!!!
-    filter = async (group) => {
-        if (group === '') {
-            this.getSubjects();
-        } else {
-            const res1 = this.state.subjectsAux.find(pos => pos.group === null)
-            if (res1) {
-                alert('Error')
-                const res = this.state.subjectsAux.filter(pos => pos.group === null)
-
-                this.setState({ subjects: res })
-            } else {
-                const res = this.state.subjectsAux.filter(pos => pos.group._id === group && pos.group !== null)
-
-                if (res.length === 0) {
-                    swal({
-                        title: 'Error',
-                        text: 'There are no subjects in this group',
-                        icon: "warning"
-                    }).then(() => {
-                        window.location.href = 'listSubject'
-                    })
-                } else {
-                    this.setState({ subjects: res })
-                }
-
-            }
-        }
+    //filtrar clientes por nombre
+    filter = async (nombre) => {
+        console.log(nombre)
+        await axios.get('http://localhost:8000/api/cliente/?nombre=' + nombre).then(res => {
+            // do stuff
+            console.log(res.data)
+            this.setState({
+                clientes: res.data
+            })
+        }).catch(err => {
+            // what now?
+            console.log(err);
+            swal({
+                text: 'No hay clientes',
+                icon: 'error'
+            })
+        })
     }
-    //obtiene de la bbdd todas las meterias
+    //obtiene de la bbdd de los 10 primeros clientes
     async getClientes() {
         const res = await axios.get('http://localhost:8000/api/cliente/');
         this.setState({
-            clientes: res.data.slice(0, 10),
-            clientesAux: res.data
+            clientes: res.data
         })
     }
 
-    // de la accion one click llama a esta funcion mandando el id de la materia seleccionada y la borra
+    // de la accion one click llama a esta funcion mandando el id del cliente seleccionada y la borra
     deleteCliente = async (id) => {
         await swal({
             title: 'Delete',
@@ -95,40 +83,28 @@ export default class ListClientes extends Component {
                             <div className="container p-4">
                                 <div className="row">
                                     <div className="form-group">
-                                        <select
-                                            className="form-control"
-                                        >
-                                            <option value="">Selecciona Letra</option>
-                                            <option value="">A</option>
-                                            <option value="">B</option>
-                                            <option value="">C</option>
-                                            <option value="">D</option>
-                                            <option value="">E</option>
-                                            <option value="">F</option>
-                                            <option value="">G</option>
-                                            <option value="">H</option>
-                                            <option value="">I</option>
-                                            <option value="">J</option>
-                                            <option value="">K</option>
-                                            <option value="">L</option>
-                                            <option value="">M</option>
-                                            <option value="">N</option>
-                                            <option value="">Ñ</option>
-                                            <option value="">O</option>
-                                            <option value="">P</option>
-                                            <option value="">Q</option>
-                                            <option value="">R</option>
-                                            <option value="">S</option>
-                                            <option value="">T</option>
-                                            <option value="">U</option>
-                                            <option value="">V</option>
-                                            <option value="">W</option>
-                                            <option value="">X</option>
-                                            <option value="">Y</option>
-                                            <option value="">Z</option>
-                                        </select>
+                                        <div className="row justify-content-between">
+                                            <div className="col-sm-6 ">
+                                                <input
+                                                    type="text"
+                                                    className="form-control"
+                                                    placeholder="Buscar Cliente"
+                                                    name="nombreCliente"
+                                                    onChange={this.onInputChange}
+                                                    value={this.state.nombreCliente}
+                                                />
+                                            </div>
+                                            <div className="col-sm-6">
+                                                <button
+                                                    className="btn btn-dark"
+                                                    onClick={() => this.filter(this.state.nombreCliente)}
+                                                >
+                                                    Buscar
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <table className="table table-dark table-striped">
+                                    <table className="table table-light table-striped">
                                         <thead>
                                             <tr>
                                                 <th scope="col">Nombre</th>

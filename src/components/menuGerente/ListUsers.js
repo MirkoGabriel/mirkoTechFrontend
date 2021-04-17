@@ -7,82 +7,65 @@ import { Link } from 'react-router-dom'
 
 const cookies = new Cookies()
 
-export default class Stock extends Component {
+export default class ListUsers extends Component {
     state = {
-        productos: [],
-        stock: [],
-        categoria: ''
+        users: [],
+        tipoSelected: ''
     }
-    //carga en el arraystock categorias para filtrar los productos
     async componentDidMount() {
-        this.getProductos();
-
-        const res = await axios.get('http://localhost:8000/api/stock/')
+        this.getUsers();
+    }
+    async getUsers() {
+        const res = await axios.get('http://localhost:8000/api/users/');
+        console.log(res)
         this.setState({
-            stock: res.data.map(categoria => categoria),
-            categoria: ''
+            users: res.data
         })
     }
-
-    //filtrar productos por categoria
-    filter = async (categoria) => {
-        console.log(categoria)
-        if (categoria === '') {
-            this.getProductos()
+    filter = async (tipo) => {
+        if (tipo === '') {
+            this.getUsers();
         } else {
-            await axios.get('http://localhost:8000/api/producto/?idCat=' + parseInt(categoria)).then(res => {
+            await axios.get('http://localhost:8000/api/users/?kind=' + tipo).then(res => {
                 // do stuff
                 console.log(res.data)
                 this.setState({
-                    productos: res.data
+                    users: res.data
                 })
             }).catch(err => {
                 // what now?
                 console.log(err);
                 swal({
-                    text: 'No hay productos',
+                    text: 'No hay Users',
                     icon: 'error'
                 })
             })
         }
     }
-    //obtiene de la bbdd los productos
-    async getProductos() {
-        const res = await axios.get('http://localhost:8000/api/producto/');
-        this.setState({
-            productos: res.data
-        })
-    }
-
-    // de la accion one click llama a esta funcion mandando el id de la producto seleccionada y la borra
-    deleteProducto = async (id) => {
+    deleteUser = async (id) => {
         await swal({
             title: 'Delete',
-            text: 'Are you sure you want to delete the Product?',
+            text: 'Are you sure you want to delete the User?',
             icon: "warning",
             buttons: ['No', 'Yes']
         }).then(respuesta => {
             if (respuesta) {
-                axios.delete('http://localhost:8000/api/producto/' + id)
+                axios.delete('http://localhost:8000/api/users/' + id)
 
                 swal({
-                    text: 'Producto Deleted',
+                    text: 'User Deleted',
                     icon: 'success'
                 }).then(() => {
-                    this.getProductos()
+                    this.getUsers()
                 })
             }
         })
     }
-
-    //Seteo en el estado el nombre(que lo relaciono desde el input del form) y el valor deseado
     onInputChange = e => {
         console.log(e.target.name, e.target.value)
         this.setState({
             [e.target.name]: e.target.value
-
         })
-
     }
     render() {
         return (
@@ -96,50 +79,41 @@ export default class Stock extends Component {
                                     <div className="form-group">
                                         <select
                                             className="form-control"
-                                            name="categoria"
+                                            name="tipoSelected"
                                             onChange={this.onInputChange}
-                                            onClick={() => this.filter(this.state.categoria)}
+                                            onClick={() => this.filter(this.state.tipoSelected)}
                                         >
-                                            <option value="">Select Categoria</option>
-                                            {
-                                                this.state.stock.map(categoria =>
-                                                    <option key={categoria.id} value={categoria.id}>
-                                                        {categoria.nombreCategoria}
-                                                    </option>)
-                                            }
+                                            <option value="">Select Tipo</option>
+                                            <option value="A">Administrador</option>
+                                            <option value="T">Técnico</option>
+                                            <option value="G">Gerente</option>
                                         </select>
                                     </div>
                                     <table className="table table-light table-striped">
                                         <thead>
                                             <tr>
-                                                <th scope="col">Categoria</th>
-                                                <th scope="col">Marca</th>
-                                                <th scope="col">Modelo</th>
-                                                <th scope="col">Descripción</th>
-                                                <th scope="col">Número de Serie</th>
-                                                <th scope="col">Cantidad</th>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Email</th>
+                                                <th scope="col">Tipo</th>
                                                 <th scope="col">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {
-                                                this.state.productos.map(producto => (
-                                                    <tr key={producto.id}>
-                                                        <th>{producto.categoria.nombreCategoria}</th>
-                                                        <th>{producto.marca}</th>
-                                                        <th>{producto.modelo}</th>
-                                                        <th>{producto.descripcion}</th>
-                                                        <th>{producto.nroSerie}</th>
-                                                        <th>{producto.cantidad}</th>
+                                                this.state.users.map(user => (
+                                                    <tr key={user.id}>
+                                                        <th>{user.name}</th>
+                                                        <th>{user.email}</th>
+                                                        <th>{user.kind}</th>
                                                         <th>
                                                             <div className="btn-group" role="group" aria-label="Basic mixed styles example">
                                                                 <button
                                                                     className="btn btn-danger"
-                                                                    onClick={() => this.deleteProducto(producto.id)}
+                                                                    onClick={() => this.deleteUser(user.id)}
                                                                 >
                                                                     Delete
                                                                 </button>
-                                                                <Link className="btn btn-info" to={'/editProducto/' + producto.id}>
+                                                                <Link className="btn btn-info" to={'/editUsers/' + user.id}>
                                                                     Edit
                                                                 </Link>
                                                             </div>
@@ -152,7 +126,6 @@ export default class Stock extends Component {
                                 </div>
                             </div>
                         </div>
-
                     )
                 } else {
                     return (
@@ -175,5 +148,4 @@ export default class Stock extends Component {
             })()
         )
     }
-
 }

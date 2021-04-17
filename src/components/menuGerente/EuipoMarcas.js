@@ -28,7 +28,7 @@ export default class CreateStudents extends Component {
         console.log(typeof (id))
         await swal({
             title: 'Delete',
-            text: 'Are you sure you want to delete the group?',
+            text: 'Are you sure you want to delete the Marca?',
             icon: "warning",
             buttons: ['No', 'Yes']
         }).then(respuesta => {
@@ -60,8 +60,8 @@ export default class CreateStudents extends Component {
             nombreMarca: this.state.nombreMarca
         })
         this.setState({ nombreMarca: '' });
-        //this.getEquipoMarca();
-        window.location.href = '/equipoMarca';
+        this.getEquipoMarca();
+        //window.location.href = '/equipoMarca';
     }
 
     render() {

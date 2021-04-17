@@ -28,7 +28,7 @@ export default class ordenTrabajo extends Component {
         this.getModel();
     }
 
-    //obtiene de la bbdd todas las students
+    //obtiene de la bbdd los clientes
     async getClientes() {
         const res = await axios.get('http://localhost:8000/api/cliente/');
         this.setState({
@@ -38,7 +38,7 @@ export default class ordenTrabajo extends Component {
         console.log(this.state.studentsAux)
     }
 
-    //obtiene de la bbdd todas las meterias
+    //obtiene de la bbdd las marcas
     async getMarcas() {
         const res = await axios.get('http://localhost:8000/api/equipoMarca/');
         this.setState({

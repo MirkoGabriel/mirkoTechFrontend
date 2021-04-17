@@ -39,7 +39,17 @@ export default class Navigation extends Component {
                             <div className="btn">
                                 <Link className="btn btn-light" to="/menuAdministrador">Administrador</Link>
                             </div>
-
+                            <div className="btn">
+                                <UncontrolledDropdown>
+                                    <DropdownToggle caret  className="btn btn-light">
+                                        Users
+                                </DropdownToggle>
+                                    <DropdownMenu>
+                                        <DropdownItem><Link className="dropdown-item" to="/createUsers">Registrar Usuarios</Link></DropdownItem>
+                                        <DropdownItem><Link className="dropdown-item" to="/listUsers">Lista Usuarios</Link></DropdownItem>
+                                    </DropdownMenu>
+                                </UncontrolledDropdown>
+                            </div>
                             <div className="btn">
                                 <UncontrolledDropdown>
                                     <DropdownToggle caret  className="btn btn-light">

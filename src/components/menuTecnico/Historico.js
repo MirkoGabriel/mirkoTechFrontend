@@ -26,7 +26,7 @@ export default class Historico extends Component {
                 OTS: []
             })
             swal({
-                text: 'OT no cargada',
+                text: 'No hay OT referidas a ese numero de serie',
                 icon: 'warning'
             })
         })
@@ -72,7 +72,7 @@ export default class Historico extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <table className="table table-dark table-striped">
+                                    <table className="table table-light table-striped">
                                         <thead>
                                             <tr>
                                                 <th scope="col">Número OT</th>
@@ -95,7 +95,7 @@ export default class Historico extends Component {
                                                         <th>{OT.marca}</th>
                                                         <th>{OT.modelo}</th>
                                                         <th>{OT.nroSerie}</th>
-                                                        <th>{OT.fechaIngreso}</th>
+                                                        <th>{OT.fechaIngreso.substr(0,10)}</th>
                                                         <th>
                                                             <div className="btn-group" role="group" aria-label="Basic mixed styles example">
 

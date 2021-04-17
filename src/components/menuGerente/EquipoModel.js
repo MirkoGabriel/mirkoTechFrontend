@@ -13,9 +13,8 @@ export default class CreateEquipoModels extends Component {
         marcaSelected: '',
         nombreModel: ''
     }
-    //consulto a la bbdd los groupos para guardarlos en el array groups y ponerlo en el select y filtrar
+    //consulto a la bbdd las marcas para guardarlos en el array marcas y ponerlo en el select y filtrar
     async componentDidMount() {
-        console.log(this.props.match.params)
         const res = await axios.get('http://localhost:8000/api/equipoMarca/')
         this.setState({
             marcas: res.data.map(marca => marca),
@@ -23,7 +22,6 @@ export default class CreateEquipoModels extends Component {
         })
     }
 
-    //al enviar el form puedo hacer un post o put
     onSubmit = async (e) => {
         e.preventDefault();
         const newModel = {
@@ -31,27 +29,25 @@ export default class CreateEquipoModels extends Component {
             nombreModel: this.state.nombreModel
         };
 
-        
-            //si editing esta en false hago un post
-            await axios.post('http://localhost:8000/api/equipoModel/', newModel).then(res => {
-                // do stuff
-                console.log(res);
+        await axios.post('http://localhost:8000/api/equipoModel/', newModel).then(res => {
+            // do stuff
+            console.log(res);
+            swal({
+                text: 'Model Created',
+                icon: 'success'
+            }).then(() => {
+                window.location.href = '/equipoModel';
+            })
+        })
+            .catch(err => {
+                // what now?
+                console.log(err);
                 swal({
-                    text: 'Model Created',
-                    icon: 'success'
-                }).then(() => {
-                    window.location.href = '/equipoModel';
+                    text: 'The Model exists or there is an empty field',
+                    icon: 'warning'
                 })
             })
-                .catch(err => {
-                    // what now?
-                    console.log(err);
-                    swal({
-                        text: 'The subject exists or there is an empty field',
-                        icon: 'warning'
-                    })
-                })
-        
+
 
     }
     //Seteo en el estado el nombre(que lo relaciono desde el input del form) y el valor deseado

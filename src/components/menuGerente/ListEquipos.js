@@ -10,11 +10,10 @@ const cookies = new Cookies()
 export default class ListEquipos extends Component {
     state = {
         models: [],
-        modelsAux: [],
         marcas: [],
         marcaSelected: ''
     }
-    //carga en el arrayGroup definido en el estado los grupos y ponerlos en el select para filtrar
+    //carga en el arraymarca la marcas de equipo en el select para filtrar
     async componentDidMount() {
         this.getModels();
 
@@ -25,38 +24,37 @@ export default class ListEquipos extends Component {
         })
     }
 
-    //filtrar materias por group CAMBIAR!!!!
+    //filtrar modelos por marca
     filter = async (marca) => {
         if (marca === '') {
             this.getModels();
         } else {
-                console.log(typeof(marca))
-                const res = this.state.modelsAux.filter(pos => pos.marca.id === parseInt(marca))
-
-                if (res.length === 0) {
-                    swal({
-                        title: 'Error',
-                        text: 'There are no models in this marca',
-                        icon: "warning"
-                    }).then(() => {
-                        window.location.href = '/listEquipo'
-                    })
-                } else {
-                    this.setState({ models: res })
-                }
+            await axios.get('http://localhost:8000/api/equipoModel/?marca=' + parseInt(marca)).then(res => {
+                // do stuff
+                console.log(res.data)
+                this.setState({
+                    models: res.data
+                })
+            }).catch(err => {
+                // what now?
+                console.log(err);
+                swal({
+                    text: 'No hay modelos',
+                    icon: 'error'
+                })
+            })
         }
     }
-    //obtiene de la bbdd todas las meterias
+    //obtiene de la bbdd los modelos
     async getModels() {
         const res = await axios.get('http://localhost:8000/api/equipoModel/');
         console.log(res)
         this.setState({
-            models: res.data.slice(0, 10),
-            modelsAux: res.data
+            models: res.data
         })
     }
 
-    // de la accion one click llama a esta funcion mandando el id de la materia seleccionada y la borra
+    // de la accion one click llama a esta funcion mandando el id del model seleccionada y la borra
     deleteModel = async (id) => {
         await swal({
             title: 'Delete',
@@ -82,9 +80,7 @@ export default class ListEquipos extends Component {
         console.log(e.target.name, e.target.value)
         this.setState({
             [e.target.name]: e.target.value
-
         })
-
     }
     render() {
         return (
@@ -111,7 +107,7 @@ export default class ListEquipos extends Component {
                                             }
                                         </select>
                                     </div>
-                                    <table className="table table-dark table-striped">
+                                    <table className="table table-light table-striped">
                                         <thead>
                                             <tr>
                                                 <th scope="col">Marca</th>

@@ -46,8 +46,9 @@ export default class editOT extends Component {
     }
 
     async getOT() {
-        const res = await axios.get('http://localhost:8000/api/ordenTrabajo/' + this.props.match.params.id)
-        console.log(res.data)
+        const res = await axios.get('http://localhost:8000/api/ordenTrabajo/' + parseInt(this.props.match.params.id))
+        console.log(res.data.descripcion)
+        console.log(res.data.estadoPresupuesto)
         this.setState({
             fechaIngreso: res.data.fechaIngreso,
             clienteId: res.data.cliente.id,
@@ -217,7 +218,10 @@ export default class editOT extends Component {
             console.log(tareaOT)
             console.log(newProducto)
         } else {
-            console.log("no hay repuestos disponibles")
+            swal({
+                text: 'No hay stock disponible',
+                icon: 'error'
+            })
         }
 
     }
@@ -226,8 +230,7 @@ export default class editOT extends Component {
         await axios.get('http://localhost:8000/api/users/?kind=T').then(res => {
             // do stuff
             this.setState({ tecnicos: res.data.map(tecnico => tecnico) })
-        })
-            .catch(err => {
+        }).catch(err => {
                 // what now?
                 console.log(err);
                 this.setState({
@@ -265,49 +268,40 @@ export default class editOT extends Component {
     }
     onSubmit = async (e) => {
         e.preventDefault();
-        if (this.state.dateEqui === null || this.state.datePresu === null) {
-            swal({
-                text: 'Si vas a actualizar carga el estado de equipo y prespuesto',
-                icon: 'warning'
-            })
-        } else {
 
-            const newOT = {
-                cliente: this.state.clienteId,
-                equipo: this.state.equipo,
-                fechaIngreso: this.state.fechaIngreso,
-                marca: this.state.marca,
-                modelo: this.state.modelo,
-                nroSerie: this.state.nroSerie,
-                tecnico: parseInt(this.state.tecnicoSelected),
-                estadoEquipo: this.state.estEquipSelected,
-                estadoPresupuesto: this.state.estPresuSelected,
-                fechaEstEqui: this.state.dateEqui.toDateString(),
-                fechaEstPresu: this.state.datePresu.toDateString(),
-                descripcion: this.state.descripcion
-            }
-            if (this.state.descripcion === '') {
-                newOT.descripcion = null
-            }
-            await axios.put('http://localhost:8000/api/ordenTrabajo/' + parseInt(this.state.id) + '/', newOT).then(res => {
-                // do stuff
-                console.log(res);
+        const newOT = {
+            cliente: this.state.clienteId,
+            equipo: this.state.equipo,
+            fechaIngreso: this.state.fechaIngreso,
+            marca: this.state.marca,
+            modelo: this.state.modelo,
+            nroSerie: this.state.nroSerie,
+            tecnico: parseInt(this.state.tecnicoSelected),
+            estadoEquipo: this.state.estEquipSelected,
+            estadoPresupuesto: this.state.estPresuSelected,
+            fechaEstEqui: this.state.dateEqui === '' ? this.state.dateEqui : this.state.dateEqui.toDateString(),
+            fechaEstPresu: this.state.datePresu === '' ? this.state.datePresu : this.state.datePresu.toDateString(),
+            descripcion: this.state.descripcion
+        }
+        console.log(newOT)
+        await axios.put('http://localhost:8000/api/ordenTrabajo/' + parseInt(this.state.id) + '/', newOT).then(res => {
+            // do stuff
+            console.log(res);
+            swal({
+                text: 'Updated OT',
+                icon: 'success'
+            }).then(() => {
+                window.location.href = '/seguimiento';
+            })
+        })
+            .catch(err => {
+                // what now?
+                console.log(err);
                 swal({
-                    text: 'Updated OT',
-                    icon: 'success'
-                }).then(() => {
-                    window.location.href = '/seguimiento';
+                    text: 'Datos erroneos',
+                    icon: 'error'
                 })
             })
-                .catch(err => {
-                    // what now?
-                    console.log(err);
-                    swal({
-                        text: 'The student exists or there is an empty field',
-                        icon: 'error'
-                    })
-                })
-        }
     }
     render() {
         return (
@@ -548,10 +542,7 @@ export default class editOT extends Component {
                                                                 value={this.state.estEquipSelected}
                                                             >
                                                                 <option value="">Seleccionar Estado</option>
-                                                                <option value="A revisar">A revisar</option>
-                                                                <option value="Revisado">Revisado</option>
                                                                 <option value="Demorado">Demorado</option>
-                                                                <option value="Aprobado">Aprobado</option>
                                                                 <option value="Reparado">Reparado</option>
                                                                 <option value="No Reparado">No Reparado</option>
                                                                 <option value="Entregado">Entregado</option>
@@ -572,9 +563,8 @@ export default class editOT extends Component {
                                                                 value={this.state.estPresuSelected}
                                                             >
                                                                 <option value="">Seleccionar Estado</option>
-                                                                <option value="A revisar">A revisar</option>
                                                                 <option value="Presupuestado">Presupuestado</option>
-                                                                <option value="Demorado">Rechazado</option>
+                                                                <option value="Rechazado">Rechazado</option>
                                                                 <option value="Aprobado">Aprobado</option>
                                                                 <option value="Avisado">Avisado</option>
                                                                 <option value="Irreparable">Irreparable</option>

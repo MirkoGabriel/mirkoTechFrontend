@@ -5,6 +5,7 @@ import Cookies from 'universal-cookie'
 import { Link } from 'react-router-dom'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import swal from 'sweetalert'
 
 const cookies = new Cookies()
 
@@ -60,7 +61,7 @@ export default class ListFactura extends Component {
     buscar = (opcion) => {
         if (opcion === 'default') {
             this.setState({ flag: null })
-            this.getRemitos()
+            this.getFacturas()
         } else if (opcion === 'nro') {
             this.setState({ flag: true })
         } else if (opcion === 'fecha') {
@@ -83,7 +84,25 @@ export default class ListFactura extends Component {
     onChangeDate1 = finalDate => {
         this.setState({ finalDate })
     }
+    deleteFactura = async (id) => {
+        await swal({
+            title: 'Delete',
+            text: 'No es Recomendable Borrar FC.Desea continuar?',
+            icon: "error",
+            buttons: ['No', 'Yes']
+        }).then(respuesta => {
+            if (respuesta) {
+                axios.delete('http://localhost:8000/api/factura/' + id)
 
+                swal({
+                    text: 'FC Deleted',
+                    icon: 'success'
+                }).then(() => {
+                    this.getFacturas()
+                })
+            }
+        })
+    }
     render() {
         return (
             (() => {
@@ -113,7 +132,7 @@ export default class ListFactura extends Component {
                                                         <input
                                                             type="text"
                                                             className="form-control"
-                                                            placeholder="Número Remito"
+                                                            placeholder="Número Factura"
                                                             name="nroFactura"
                                                             onChange={this.onInputChange}
                                                             value={this.state.nroFactura}
@@ -122,7 +141,7 @@ export default class ListFactura extends Component {
                                                     <div className="col-sm-6">
                                                         <button
                                                             className="btn btn-dark"
-                                                            //onClick={() => this.filter(this.state.nroRemito)}
+                                                            onClick={() => this.filter(this.state.nroFactura)}
                                                         >
                                                             Buscar
                                                          </button>
@@ -161,7 +180,7 @@ export default class ListFactura extends Component {
                                             )
                                         }
                                     })()}
-                                    <table className="table table-dark table-striped">
+                                    <table className="table table-light table-striped">
                                         <thead>
                                             <tr>
                                                 <th scope="col">Nro Factura</th>
@@ -178,16 +197,16 @@ export default class ListFactura extends Component {
                                                         <th>{factura.id}</th>
                                                         <th>{factura.oti.id}</th>
                                                         <th>{factura.oti.cliente.nombre}</th>
-                                                        <th>{this.mirko(factura.fechaIngreso)}</th>
+                                                        <th>{factura.fechaIngreso.substr(0,10)}</th>
                                                         <th>
                                                             <div className="btn-group" role="group" aria-label="Basic mixed styles example">
                                                                 <button
                                                                     className="btn btn-danger"
-                                                                //onClick={() => this.deleteSubject(subject._id)}
+                                                                    onClick={() => this.deleteFactura(factura.id)}
                                                                 >
                                                                     Delete
                                                                 </button>
-                                                                <Link className="btn btn-dark" to={'/editFactura/'+factura.id}>
+                                                                <Link className="btn btn-info" to={'/editFactura/'+factura.id}>
                                                                     Edit
                                                                 </Link>
                                                             </div>

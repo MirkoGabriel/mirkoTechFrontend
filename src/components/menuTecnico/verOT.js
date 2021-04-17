@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 const cookies = new Cookies()
 
 export default class verOT extends Component {
+    /**Obejeto estado */
     state = {
         id: '',
         equipo: '',
@@ -24,28 +25,21 @@ export default class verOT extends Component {
         cliente: '',
         tareas:[]
     }
+    /**Obtengo los datos de la Ot a ver los datos  */
     async componentDidMount() {
         this.getOT();
     }
+    fechaString = (day) => {
+        var date = new Date(day)
+        var dia = date.getDate()
+        var mes = date.getMonth() + 1
+        var ano = date.getFullYear()
+        var fecha = dia + '/' + mes + '/' + ano
+        return fecha
+    }
     async getOT() {
-        const res = await axios.get('http://localhost:8000/api/ordenTrabajo/' + this.props.match.params.id)
-        var desc
-
-        if (res.data.descripcion === null) {
-            desc = ''
-        } else {
-            desc = res.data.descripcion
-        }
-        const date = new Date(res.data.fechaEstPresu)
-        const dia = date.getDate()
-        const mes = date.getMonth() + 1
-        const ano = date.getFullYear()
-        const fechaPresu = dia + '/' + mes + '/' + ano
-        const date1 = new Date(res.data.fechaEstEqui)
-        const dia1 = date1.getDate()
-        const mes1 = date1.getMonth() + 1
-        const ano1 = date1.getFullYear()
-        const fechaEqui = dia1 + '/' + mes1 + '/' + ano1
+        const res = await axios.get('http://localhost:8000/api/ordenTrabajo/' + parseInt(this.props.match.params.id))
+        
         this.setState({
             fechaIngreso: res.data.fechaIngreso,
             equipo: res.data.equipo,
@@ -60,14 +54,15 @@ export default class verOT extends Component {
             tecnico: res.data.tecnico.name,
             estadoEquipo: res.data.estadoEquipo,
             estadoPresupuesto: res.data.estadoPresupuesto,
-            fechaEstPresu: fechaPresu,
-            fechaEstEqui: fechaEqui,
-            descripcion: desc
+            fechaEstPresu: res.data.fechaEstPresu === '' ? res.data.fechaEstPresu : this.fechaString(res.data.fechaEstPresu),
+            fechaEstEqui: res.data.fechaEstEqui === '' ? res.data.fechaEstEqui : this.fechaString(res.data.fechaEstEqui),
+            descripcion: res.data.descripcion
         })
         console.log(this.state)
 
         this.getTareasOT();
     }
+    /**Obtengo las treas referidas a esa OT */
     async getTareasOT() {
         console.log(this.state.id)
         await axios.get('http://localhost:8000/api/tareasOT/?ot=' + this.state.id).then(res => {

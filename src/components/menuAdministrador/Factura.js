@@ -50,7 +50,7 @@ export default class Factura extends Component {
                 editing: true,
                 importe: res.data.importe,
                 iva: Number((parseFloat(res.data.importe) * 0.21).toFixed(2)),
-                total: parseFloat(res.data.importe) + (parseFloat(res.data.importe) * 0.21),
+                total:  Number((parseFloat(res.data.importe) + (parseFloat(res.data.importe) * 0.21)).toFixed(2))
 
             })
         }
@@ -81,7 +81,7 @@ export default class Factura extends Component {
                             nroFactura: res.data.id,
                             flag: true,
                             iva: Number((parseFloat(res.data.importe) * 0.21).toFixed(2)),
-                            total: parseFloat(res.data.importe) + (parseFloat(res.data.importe) * 0.21)
+                            total:  Number((parseFloat(res.data.importe) + (parseFloat(res.data.importe) * 0.21)).toFixed(2))
                         })
                         window.print()
                         window.location.href = '/listFactura';
@@ -116,7 +116,7 @@ export default class Factura extends Component {
                             nroFactura: res.data.id,
                             flag: true,
                             iva: Number((parseFloat(res.data.importe) * 0.21).toFixed(2)),
-                            total: parseFloat(res.data.importe) + (parseFloat(res.data.importe) * 0.21)
+                            total: Number((parseFloat(res.data.importe) + (parseFloat(res.data.importe) * 0.21)).toFixed(2))
                         })
                         window.print()
                         window.location.href = '/menuAdministrador';
@@ -135,7 +135,7 @@ export default class Factura extends Component {
 
     }
     buscar = async (id) => {
-        await axios.get('http://localhost:8000/api/ordenTrabajo/' + id).then(res => {
+        await axios.get('http://localhost:Number(8000/api/ordenTrabajo/' + id).then(res => {
             // do stuff
             console.log(res.data)
             if (res.data.estadoEquipo === 'Entregado') {
@@ -437,7 +437,7 @@ export default class Factura extends Component {
                                                                 </button>
                                                                 </form>
 
-                                                                <Link className="btn btn-danger btn-lg" to="/menuAdministrador" >Exit</Link>
+                                                                <Link className="btn btn-danger btn-lg" to="/listFactura" >Exit</Link>
                                                             </div>
                                                         </div>
                                                     </div>

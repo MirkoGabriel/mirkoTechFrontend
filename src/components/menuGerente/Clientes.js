@@ -19,10 +19,10 @@ export default class Clientes extends Component {
         contacto:'',
         domicilio:''
     }
-    //consulto a la bbdd los groupos para guardarlos en el array groups y ponerlo en el select y filtrar
+    
     async componentDidMount() {
         
-        //si se presenta un id en el params voy a actualizar y retorno los valores de ese id student
+        //si se presenta un id en el params voy a actualizar y retorno los valores de ese id client
         if (this.props.match.params.id) {
             const res = await axios.get('http://localhost:8000/api/cliente/' + this.props.match.params.id)
             console.log(res)
@@ -60,7 +60,7 @@ export default class Clientes extends Component {
                 // do stuff
                 console.log(res);
                 swal({
-                    text: 'Updated Cliente',
+                    text: 'Updated Client',
                     icon: 'success'
                 }).then(() => {
                     window.location.href = '/listClientes';
@@ -70,7 +70,7 @@ export default class Clientes extends Component {
                     // what now?
                     console.log(err);
                     swal({
-                        text: 'The student exists or there is an empty field',
+                        text: 'The Client exists or there is an empty field',
                         icon: 'error'
                     })
                 })

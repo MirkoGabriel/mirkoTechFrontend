@@ -14,7 +14,7 @@ export default class Stock extends Component {
         stock: [],
         categoria: ''
     }
-    //carga en el arrayGroup definido en el estado los grupos y ponerlos en el select para filtrar
+    //carga en el array stock las categorias definido en el estado los grupos y ponerlos en el select para filtrar
     async componentDidMount() {
         this.getProductos();
 
@@ -25,7 +25,7 @@ export default class Stock extends Component {
         })
     }
 
-    //filtrar materias por group CAMBIAR!!!!
+    //filtra productos por la categoria mandada
     filter =  (categoria) => {
         if (categoria === '') {
             this.getProductos();
@@ -45,33 +45,12 @@ export default class Stock extends Component {
             }
         }
     }
-    //obtiene de la bbdd todas las meterias
+    //obtiene de la bbdd todas los productos
     async getProductos() {
         const res = await axios.get('http://localhost:8000/api/producto/');
         this.setState({
             productos: res.data.slice(0, 10),
             productosAux: res.data
-        })
-    }
-
-    // de la accion one click llama a esta funcion mandando el id de la materia seleccionada y la borra
-    deleteProducto = async (id) => {
-        await swal({
-            title: 'Delete',
-            text: 'Are you sure you want to delete the Product?',
-            icon: "warning",
-            buttons: ['No', 'Yes']
-        }).then(respuesta => {
-            if (respuesta) {
-                axios.delete('http://localhost:8000/api/producto/' + id)
-
-                swal({
-                    text: 'Producto Deleted',
-                    icon: 'success'
-                }).then(() => {
-                    this.getProductos()
-                })
-            }
         })
     }
 
@@ -109,7 +88,7 @@ export default class Stock extends Component {
                                             }
                                         </select>
                                     </div>
-                                    <table className="table table-dark table-striped">
+                                    <table className="table table-light table-striped">
                                         <thead>
                                             <tr>
                                                 <th scope="col">Categoria</th>

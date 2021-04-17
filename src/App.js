@@ -13,6 +13,8 @@ import ListClientes from './components/menuGerente/ListClientes'
 import Categoria from './components/menuGerente/Categoria'
 import Producto from './components/menuGerente/Producto'
 import Stock from './components/menuGerente/Stock'
+import Registrar from './components/Registrar'
+import ListUsers from './components/menuGerente/ListUsers'
 
 /*Tecnico */
 
@@ -65,6 +67,9 @@ function App() {
         <Route path="/historico"  exact component={Historico}/>
         <Route path="/verOT/:id"  exact component={VerOT}/>
 
+        <Route path="/createUsers/"  exact component={Registrar}/>
+        <Route path="/listUsers/"  exact component={ListUsers}/>
+        <Route path="/editUsers/:id"  exact component={Registrar}/>
       </Router>
   );
 }

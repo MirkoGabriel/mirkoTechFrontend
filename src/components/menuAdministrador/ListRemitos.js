@@ -4,6 +4,7 @@ import Navigation from './Navigation'
 import Cookies from 'universal-cookie'
 import { Link } from 'react-router-dom'
 import DatePicker from 'react-datepicker'
+import swal from 'sweetalert'
 import 'react-datepicker/dist/react-datepicker.css'
 
 const cookies = new Cookies()
@@ -81,6 +82,25 @@ export default class ListRemitos extends Component {
 
     onChangeDate1 = finalDate => {
         this.setState({ finalDate })
+    }
+    deleteRemito = async (id) => {
+        await swal({
+            title: 'Delete',
+            text: 'No es Recomendable Borrar Remito.Desea continuar?',
+            icon: "error",
+            buttons: ['No', 'Yes']
+        }).then(respuesta => {
+            if (respuesta) {
+                axios.delete('http://localhost:8000/api/remito/' + id)
+
+                swal({
+                    text: 'Remito Deleted',
+                    icon: 'success'
+                }).then(() => {
+                    this.getRemitos()
+                })
+            }
+        })
     }
     render() {
         return (
@@ -160,7 +180,7 @@ export default class ListRemitos extends Component {
                                         }
                                     })()}
 
-                                    <table className="table table-dark table-striped">
+                                    <table className="table table-light table-striped">
                                         <thead>
                                             <tr>
                                                 <th scope="col">Nro Remito</th>
@@ -182,11 +202,11 @@ export default class ListRemitos extends Component {
                                                             <div className="btn-group" role="group" aria-label="Basic mixed styles example">
                                                                 <button
                                                                     className="btn btn-danger"
-                                                                //onClick={() => this.deleteSubject(subject._id)}
+                                                                    onClick={() => this.deleteRemito(remito.id)}
                                                                 >
                                                                     Delete
                                                                 </button>
-                                                                <Link className="btn btn-dark" to={'/editRemito/'+remito.id}>
+                                                                <Link className="btn btn-info" to={'/editRemito/'+remito.id}>
                                                                     Edit
                                                                 </Link>
                                                             </div>
