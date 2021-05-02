@@ -4,6 +4,11 @@ import swal from 'sweetalert'
 import Navigation from './Navigation'
 import Cookies from 'universal-cookie'
 import { Link } from 'react-router-dom'
+import logo from '../../icons/mirkoTech.png'
+import a from '../../icons/remito.png'
+import linea from '../../icons/linea.png'
+import lineav from '../../icons/lineav.png'
+import jsPDF from 'jspdf'
 
 const cookies = new Cookies()
 
@@ -25,7 +30,11 @@ export default class Remito extends Component {
         flag: null,
         editing: false,
         domicilioCliente: '',
-        contactoCliente: ''
+        contactoCliente: '',
+        tipoEquipo:'',
+        marcaEquipo:'',
+        modeloEquipo:'',
+        nroSerie:''
     }
 
     async componentDidMount() {
@@ -45,6 +54,10 @@ export default class Remito extends Component {
                 informacion: res.data.informacion,
                 descripcion: res.data.descripcion,
                 OT: res.data.oti.id,
+                tipoEquipo:res.data.oti.equipo,
+                marcaEquipo:res.data.oti.marca,
+                modeloEquipo:res.data.oti.modelo,
+                nroSerie:res.data.oti.nroSerie,
                 idCliente: res.data.oti.cliente.id,
                 nombreCliente: res.data.oti.cliente.nombre,
                 emailCliente: res.data.oti.cliente.email,
@@ -114,10 +127,9 @@ export default class Remito extends Component {
                     if (respuesta) {
                         this.setState({
                             fecha: res.data.fechaIngreso.substr(0, 10),
-                            nroRemito: res.data.id,
-                            flag: true
+                            nroRemito: res.data.id
                         })
-                        window.print()
+                        this.print()
                         window.location.href = '/menuAdministrador';
                     } else {
                         window.location.href = '/menuAdministrador';
@@ -192,7 +204,49 @@ export default class Remito extends Component {
     }
 
     print() {
-        window.print()
+        var doc = new jsPDF()
+        doc.addImage(logo,'PNG',32,10,35,35)
+        doc.addImage(a,'PNG',90,5,30,60)
+        doc.addImage(linea,'PNG',0,58,400,10)
+        doc.addImage(linea,'PNG',0,70.1,400,10)
+        doc.addImage(linea,'PNG',0,98,400,10)
+        doc.addImage(linea,'PNG',0,110,400,10)
+        doc.addImage(linea,'PNG',0,130,400,10)
+        doc.addImage(linea,'PNG',0,142,400,10)
+        doc.addImage(linea,'PNG',0,262,400,10)
+        doc.addImage(lineav,'PNG',75,135,10,132)
+
+        doc.text(35,50,'Mirko Tech')
+        doc.text(32,55,'Reparaciones')
+        doc.text(120,20,'Remito')
+        doc.text(120,30,'N° 0001-'+this.state.nroRemito)
+        doc.text(120,40,'Fecha de emisión :  '+this.state.fecha )
+        doc.text(120,50,'CUIL :  20-93873483-7')
+
+        doc.text(20,70,'DATOS DEL CLIENTE')
+        doc.text(20,82,'Razón Social: '+this.state.nombreCliente)
+        doc.text(100,82,'Contacto: '+this.state.contactoCliente)
+        doc.text(20,90,'Telefono: '+this.state.telefonoCliente)
+        doc.text(100,90,'Domicilio: '+this.state.domicilioCliente)
+        doc.text(20,98,'Pago: '+this.state.pagoCliente)
+        doc.text(100,98,'Email: '+this.state.emailCliente)
+
+        doc.text(20,110,'DATOS DEL EQUIPO')
+        doc.text(20,122,'Tipo: '+this.state.tipoEquipo)
+        doc.text(100,122,'Marca: '+this.state.marcaEquipo)
+        doc.text(20,130,'Modelo: '+this.state.modeloEquipo)
+        doc.text(100,130,'Número de Serie: '+this.state.nroSerie)
+
+        doc.text(20,142,'Orden Trabajo')
+        doc.text(35,155,''+this.state.OT)
+
+        doc.text(100,142,'Descripción')
+        doc.text(100,155,''+this.state.descripcion)
+        doc.text(100,163,''+this.state.informacion)
+
+        doc.text(100,290,'Recibí conforme: ......................................')
+
+        doc.save('Remito_0002-'+this.state.nroRemito+'.pdf')
     }
 
     render() {

@@ -4,6 +4,11 @@ import swal from 'sweetalert'
 import Navigation from './Navigation'
 import Cookies from 'universal-cookie'
 import { Link } from 'react-router-dom'
+import jsPDF from 'jspdf'
+import logo from '../../icons/mirkoTech.png'
+import a from '../../icons/factura.png'
+import linea from '../../icons/linea.png'
+import lineav from '../../icons/lineav.png'
 
 const cookies = new Cookies()
 
@@ -113,12 +118,9 @@ export default class Factura extends Component {
                     if (respuesta) {
                         this.setState({
                             fecha: res.data.fechaIngreso.substr(0, 10),
-                            nroFactura: res.data.id,
-                            flag: true,
-                            iva: Number((parseFloat(res.data.importe) * 0.21).toFixed(2)),
-                            total: Number((parseFloat(res.data.importe) + (parseFloat(res.data.importe) * 0.21)).toFixed(2))
+                            nroFactura: res.data.id
                         })
-                        window.print()
+                        this.print()
                         window.location.href = '/menuAdministrador';
                     } else {
                         window.location.href = '/menuAdministrador';
@@ -135,7 +137,7 @@ export default class Factura extends Component {
 
     }
     buscar = async (id) => {
-        await axios.get('http://localhost:Number(8000/api/ordenTrabajo/' + id).then(res => {
+        await axios.get('http://localhost:8000/api/ordenTrabajo/' + id).then(res => {
             // do stuff
             console.log(res.data)
             if (res.data.estadoEquipo === 'Entregado') {
@@ -185,7 +187,44 @@ export default class Factura extends Component {
         })
     }
     print() {
-        window.print()
+        //window.print()
+        var doc = new jsPDF('landscape','px','a4','false')
+        doc.addImage(logo,'PNG',55,20,70,70)
+        doc.addImage(a,'PNG',280,0,70,150)
+        doc.addImage(linea,'PNG',0,132,800,23)
+        doc.addImage(linea,'PNG',0,200,800,23)
+        doc.addImage(linea,'PNG',0,233,800,23)
+        doc.addImage(linea,'PNG',0,360,800,23)
+        doc.addImage(linea,'PNG',0,400,800,23)
+        doc.addImage(lineav,'PNG',190,211,23,160)
+        doc.addImage(lineav,'PNG',420,211,23,250)
+
+        doc.text(160,45,'Mirko Piñas')
+        doc.text(160,65,'1169535720')
+        doc.text(160,85,'mirkogabriel67@gmail.com')
+
+        doc.text(60,100,'Mirko Tech')
+        doc.text(53,120,'Reparaciones')
+        doc.text(400,45,'Factura')
+        doc.text(400,65,'N° 0001-'+this.state.nroFactura)
+        doc.text(400,85,'Fecha de emisión :  '+this.state.fecha )
+        doc.text(400,105,'CUIL :  20-93873483-7')
+
+        doc.text(90,170,'Contacto: '+this.state.contactoCliente)
+        doc.text(390,170,'Domicilio: '+this.state.domicilioCliente)
+        doc.text(90,190,'Razón Social: '+this.state.nombreCliente)
+        doc.text(390,190,'Condición de Pago: '+this.state.pagoCliente)
+        doc.text(60,230,'Orden Trabajo')
+        doc.text(285,230,'Descripción')
+        doc.text(520,230,'Importe')
+        doc.text(90,270,''+this.state.OT)
+        doc.text(250,270,''+this.state.descripcion)
+        doc.text(520,270,''+this.state.importe+' $')
+        doc.text(180,395,'I.V.A Insc. 21%')
+        doc.text(180,430,'Importe Total')
+        doc.text(520,395,''+Number((parseFloat(this.state.importe) * 0.21).toFixed(2))+' $')
+        doc.text(520,430,''+Number((parseFloat(this.state.importe) + (parseFloat(this.state.importe) * 0.21)).toFixed(2))+' $')
+        doc.save('Factura_0001-'+this.state.nroFactura+'.pdf')
     }
     render() {
         return (
@@ -362,55 +401,6 @@ export default class Factura extends Component {
                                                                 </th>
                                                             </tr>
 
-
-                                                            {(() => {
-                                                                if (this.state.flag === true) {
-                                                                    return (
-                                                                        <tr>
-                                                                            <th scope="col"> </th>
-                                                                            <th scope="col"> </th>
-                                                                            <th scope="col"> </th>
-                                                                            <th scope="col">IVA</th>
-                                                                        </tr>
-                                                                    )
-                                                                }
-                                                            })()}
-                                                            {(() => {
-                                                                if (this.state.flag === true) {
-                                                                    return (
-                                                                        <tr>
-                                                                            <th scope="col"></th>
-                                                                            <th scope="col"></th>
-                                                                            <th scope="col"></th>
-                                                                            <th scope="col">{this.state.iva}</th>
-                                                                        </tr>
-                                                                    )
-                                                                }
-                                                            })()}
-                                                            {(() => {
-                                                                if (this.state.flag === true) {
-                                                                    return (
-                                                                        <tr>
-                                                                            <th scope="col"> </th>
-                                                                            <th scope="col"> </th>
-                                                                            <th scope="col"> </th>
-                                                                            <th scope="col">Total</th>
-                                                                        </tr>
-                                                                    )
-                                                                }
-                                                            })()}
-                                                            {(() => {
-                                                                if (this.state.flag === true) {
-                                                                    return (
-                                                                        <tr>
-                                                                            <th scope="col"> </th>
-                                                                            <th scope="col"> </th>
-                                                                            <th scope="col"> </th>
-                                                                            <th scope="col">{this.state.total}</th>
-                                                                        </tr>
-                                                                    )
-                                                                }
-                                                            })()}
                                                         </tbody>
                                                     </table>
                                                 </div>

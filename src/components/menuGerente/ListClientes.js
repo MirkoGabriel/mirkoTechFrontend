@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import swal from 'sweetalert'
 import Navigation from './Navigation'
+import Admin from '../menuAdministrador/Navigation'
 import Cookies from 'universal-cookie'
 import { Link } from 'react-router-dom'
 
@@ -10,11 +11,15 @@ const cookies = new Cookies()
 export default class ListClientes extends Component {
     state = {
         clientes: [],
-        nombreCliente: ''
+        nombreCliente: '',
+        button:''
     }
-    
+
     async componentDidMount() {
         this.getClientes();
+        this.setState({
+            button: cookies.get('kind') === 'A' ? 'Ver' : 'Edit'
+        })
     }
 
     //filtrar clientes por nombre
@@ -76,10 +81,20 @@ export default class ListClientes extends Component {
     render() {
         return (
             (() => {
-                if (cookies.get('kind') === 'G') {
+                if (cookies.get('kind') === 'G' || cookies.get('kind') === 'A') {
                     return (
                         <div>
-                            <Navigation />
+                            {(() => {
+                                if (cookies.get('kind') === 'G') {
+                                    return (
+                                        <Navigation />
+                                    )
+                                }else if(cookies.get('kind') === 'A'){
+                                    return(
+                                        <Admin/>
+                                    )
+                                }
+                            })()}
                             <div className="container p-4">
                                 <div className="row">
                                     <div className="form-group">
@@ -124,14 +139,21 @@ export default class ListClientes extends Component {
                                                         <th>{cliente.pago}</th>
                                                         <th>
                                                             <div className="btn-group" role="group" aria-label="Basic mixed styles example">
-                                                                <button
-                                                                    className="btn btn-danger"
-                                                                    onClick={() => this.deleteCliente(cliente.id)}
-                                                                >
-                                                                    Delete
-                                                                </button>
+
+                                                                {(() => {
+                                                                    if (cookies.get('kind') === 'G') {
+                                                                        return (
+                                                                            <button
+                                                                                className="btn btn-danger"
+                                                                                onClick={() => this.deleteCliente(cliente.id)}
+                                                                            >
+                                                                                Delete
+                                                                            </button>
+                                                                        )
+                                                                    }
+                                                                })()}
                                                                 <Link className="btn btn-info" to={'/editCliente/' + cliente.id}>
-                                                                    Edit
+                                                                    {this.state.button}
                                                                 </Link>
                                                             </div>
                                                         </th>

@@ -92,9 +92,18 @@ export default class Seguimiento extends Component {
             this.setState({ flag: null })
             this.getOTS()
         } else if (opcion === 'nro') {
-            this.setState({ flag: true })
+            this.setState({
+                flag: true,
+                nroOT: ''
+            })
+            this.getOTS()
         } else if (opcion === 'fecha') {
-            this.setState({ flag: false })
+            this.setState({
+                flag: false,
+                startDate: '',
+                finalDate: ''
+            })
+            this.getOTS()
         }
     }
     //obtiene de la bbdd todas las OT
@@ -162,111 +171,111 @@ export default class Seguimiento extends Component {
                                             <option value="fecha">Fechas</option>
                                         </select>
                                     </div>
-                                
-                            {
-                        (() => {
-                            if (this.state.flag === true) {
-                                return (
-                                    <div className="row justify-content-between ml-auto">
-                                        <div className="col-sm-6 ">
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                placeholder="Número OT"
-                                                name="nroOT"
-                                                onChange={this.onInputChange}
-                                                value={this.state.nroOT}
-                                            />
-                                        </div>
-                                        <div className="col-sm-6">
-                                            <button
-                                                className="btn btn-dark"
-                                                onClick={() => this.filter(this.state.nroOT)}
-                                            >
-                                                Buscar
+
+                                    {
+                                        (() => {
+                                            if (this.state.flag === true) {
+                                                return (
+                                                    <div className="row justify-content-between ml-auto">
+                                                        <div className="col-sm-6 ">
+                                                            <input
+                                                                type="text"
+                                                                className="form-control"
+                                                                placeholder="Número OT"
+                                                                name="nroOT"
+                                                                onChange={this.onInputChange}
+                                                                value={this.state.nroOT}
+                                                            />
+                                                        </div>
+                                                        <div className="col-sm-6">
+                                                            <button
+                                                                className="btn btn-dark"
+                                                                onClick={() => this.filter(this.state.nroOT)}
+                                                            >
+                                                                Buscar
                                                          </button>
-                                        </div>
-                                    </div>
-                                )
-                            } else if (this.state.flag === false) {
-                                return (
-                                    <div className="row justify-content-between ml-auto">
-                                        <div className="col-sm-2 ">
-                                            <DatePicker
-                                                selected={this.state.startDate}
-                                                onChange={this.onChangeDate}
-                                                dateFormat="dd/MM/yyyy"
-                                                placeholderText="Start Date"
-                                            />
-                                        </div>
-                                        <div className="col-sm-2 ">
-                                            <DatePicker
-                                                selected={this.state.finalDate}
-                                                onChange={this.onChangeDate1}
-                                                dateFormat="dd/MM/yyyy"
-                                                placeholderText="Final Date"
-                                            />
-                                        </div>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            } else if (this.state.flag === false) {
+                                                return (
+                                                    <div className="row justify-content-between ml-auto">
+                                                        <div className="col-sm-2 ">
+                                                            <DatePicker
+                                                                selected={this.state.startDate}
+                                                                onChange={this.onChangeDate}
+                                                                dateFormat="dd/MM/yyyy"
+                                                                placeholderText="Start Date"
+                                                            />
+                                                        </div>
+                                                        <div className="col-sm-2 ">
+                                                            <DatePicker
+                                                                selected={this.state.finalDate}
+                                                                onChange={this.onChangeDate1}
+                                                                dateFormat="dd/MM/yyyy"
+                                                                placeholderText="Final Date"
+                                                            />
+                                                        </div>
 
-                                        <div className="col-sm-2">
-                                            <button
-                                                className="btn btn-dark btn-sm"
-                                                onClick={() => this.filterFechas(this.state.startDate, this.state.finalDate)}
-                                            >
-                                                Buscar
-                                                        </button>
-                                        </div>
-                                    </div>
-                                )
-                            }
-                        })()
-                    }
+                                                        <div className="col-sm-2">
+                                                            <button
+                                                                className="btn btn-dark btn-sm"
+                                                                onClick={() => this.filterFechas(this.state.startDate, this.state.finalDate)}
+                                                            >
+                                                                Buscar
+                                            </button>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            }
+                                        })()
+                                    }
 
 
 
-                    <table className="table table-light table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">Número OT</th>
-                                <th scope="col">Cliente</th>
-                                <th scope="col">Tipo</th>
-                                <th scope="col">Marca</th>
-                                <th scope="col">Modelo</th>
-                                <th scope="col">Número de Serie</th>
-                                <th scope="col">Fecha Ingreso</th>
-                                <th scope="col">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                this.state.OTS.map(OT => (
-                                    <tr key={OT.id} className={this.estado(OT.estadoEquipo)}>
-                                        <th>{OT.id}</th>
-                                        <th>{OT.cliente.nombre}</th>
-                                        <th>{OT.equipo}</th>
-                                        <th>{OT.marca}</th>
-                                        <th>{OT.modelo}</th>
-                                        <th>{OT.nroSerie}</th>
-                                        <th>{OT.fechaIngreso.substr(0, 10)}</th>
-                                        <th>
-                                            <div className="btn-group" role="group" aria-label="Basic mixed styles example">
-                                                <button
-                                                    className="btn btn-danger"
-                                                    onClick={() => this.deleteOT(OT.id)}
-                                                >
-                                                    Delete
+                                    <table className="table table-light table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Número OT</th>
+                                                <th scope="col">Cliente</th>
+                                                <th scope="col">Tipo</th>
+                                                <th scope="col">Marca</th>
+                                                <th scope="col">Modelo</th>
+                                                <th scope="col">Número de Serie</th>
+                                                <th scope="col">Fecha Ingreso</th>
+                                                <th scope="col">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                this.state.OTS.map(OT => (
+                                                    <tr key={OT.id} className={this.estado(OT.estadoEquipo)}>
+                                                        <th>{OT.id}</th>
+                                                        <th>{OT.cliente.nombre}</th>
+                                                        <th>{OT.equipo}</th>
+                                                        <th>{OT.marca}</th>
+                                                        <th>{OT.modelo}</th>
+                                                        <th>{OT.nroSerie}</th>
+                                                        <th>{OT.fechaIngreso.substr(0, 10)}</th>
+                                                        <th>
+                                                            <div className="btn-group" role="group" aria-label="Basic mixed styles example">
+                                                                <button
+                                                                    className="btn btn-danger"
+                                                                    onClick={() => this.deleteOT(OT.id)}
+                                                                >
+                                                                    Delete
                                                                 </button>
-                                                <Link className="btn btn-info" to={'/editOT/' + OT.id}>
-                                                    Edit
+                                                                <Link className="btn btn-info" to={'/editOT/' + OT.id}>
+                                                                    Edit
                                                                 </Link>
-                                            </div>
-                                        </th>
-                                    </tr>
-                                ))
-                            }
-                        </tbody>
-                    </table>
-                        </div >
+                                                            </div>
+                                                        </th>
+                                                    </tr>
+                                                ))
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div >
                             </div >
                         </div >
 

@@ -62,8 +62,6 @@ export default class ordenTrabajo extends Component {
                     title: 'Error',
                     text: 'There are no models in this marca',
                     icon: "warning"
-                }).then(() => {
-                    window.location.href = '/stockTecnico'
                 })
             } else {
                 this.setState({ modelAux: res })

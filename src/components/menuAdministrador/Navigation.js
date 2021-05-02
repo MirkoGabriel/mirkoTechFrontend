@@ -42,7 +42,8 @@ export default class Navigation extends Component {
                                         <DropdownItem><Link className="dropdown-item" to="/listRemito">Lista Remitos</Link></DropdownItem>
                                     </DropdownMenu>
                                 </UncontrolledDropdown> 
-                            </div><div className="btn">
+                            </div>
+                            <div className="btn">
                                 <UncontrolledDropdown>
                                     <DropdownToggle caret className="btn btn-light">
                                         Facturas
@@ -52,6 +53,9 @@ export default class Navigation extends Component {
                                         <DropdownItem><Link className="dropdown-item" to="/listFactura">Lista Facturas</Link></DropdownItem>
                                     </DropdownMenu>
                                 </UncontrolledDropdown>
+                            </div>
+                            <div className="btn">
+                                <Link className="btn btn-light" to="/listClientes">Clientes</Link>
                             </div>
                             {(() => {
                                 if (cookies.get('kind') === 'G') {

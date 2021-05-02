@@ -542,7 +542,7 @@ export default class editOT extends Component {
                                                                 value={this.state.estEquipSelected}
                                                             >
                                                                 <option value="">Seleccionar Estado</option>
-                                                                <option value="Demorado">Demorado</option>
+                                                                <option value="Demorado">Revisado</option>
                                                                 <option value="Reparado">Reparado</option>
                                                                 <option value="No Reparado">No Reparado</option>
                                                                 <option value="Entregado">Entregado</option>

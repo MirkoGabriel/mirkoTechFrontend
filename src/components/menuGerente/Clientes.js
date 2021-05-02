@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import swal from 'sweetalert'
 import Navigation from './Navigation'
+import Admin from '../menuAdministrador/Navigation'
 import Cookies from 'universal-cookie'
 import { Link } from 'react-router-dom'
 
@@ -15,13 +16,14 @@ export default class Clientes extends Component {
         pago: '',
         editing: false,
         id: '',
-        titulo:'',
-        contacto:'',
-        domicilio:''
+        titulo: '',
+        contacto: '',
+        domicilio: '',
+        input: ''
     }
-    
+
     async componentDidMount() {
-        
+
         //si se presenta un id en el params voy a actualizar y retorno los valores de ese id client
         if (this.props.match.params.id) {
             const res = await axios.get('http://localhost:8000/api/cliente/' + this.props.match.params.id)
@@ -33,12 +35,13 @@ export default class Clientes extends Component {
                 pago: res.data.pago,
                 editing: true,
                 id: this.props.match.params.id,
-                titulo:'Actualizar',
-                contacto:res.data.contacto,
-                domicilio:res.data.domicilio
+                titulo: 'Actualizar',
+                contacto: res.data.contacto,
+                domicilio: res.data.domicilio,
+                input: cookies.get('kind') === 'A' ? true : false
             })
-        }else{
-            this.setState({titulo:'Registrar'})
+        } else {
+            this.setState({ titulo: 'Registrar' })
         }
     }
 
@@ -51,12 +54,12 @@ export default class Clientes extends Component {
             telefono: this.state.telefono,
             email: this.state.email,
             pago: this.state.pago,
-            contacto:this.state.contacto,
-            domicilio:this.state.domicilio
+            contacto: this.state.contacto,
+            domicilio: this.state.domicilio
         };
 
         if (this.state.editing) {
-            await axios.put('http://localhost:8000/api/cliente/' + this.state.id+'/', newCliente).then(res => {
+            await axios.put('http://localhost:8000/api/cliente/' + this.state.id + '/', newCliente).then(res => {
                 // do stuff
                 console.log(res);
                 swal({
@@ -107,10 +110,21 @@ export default class Clientes extends Component {
     render() {
         return (
             (() => {
-                if (cookies.get('kind') === 'G') {
+                if (cookies.get('kind') === 'G' || cookies.get('kind') === 'A') {
                     return (
                         <div>
-                            <Navigation />
+                            {(() => {
+                                if (cookies.get('kind') === 'G') {
+                                    return (
+                                        <Navigation />
+                                    )
+                                }else if(cookies.get('kind') === 'A'){
+                                    return(
+                                        <Admin/>
+                                    )
+                                }
+                            })()}
+                            
                             <div className="container p-4">
                                 <div className="col-md-6 offset-md-3">
                                     <div className="card card-body">
@@ -122,6 +136,7 @@ export default class Clientes extends Component {
                                                 placeholder="Client Name"
                                                 name="nombre"
                                                 onChange={this.onInputChange}
+                                                readOnly={this.state.input}
                                                 required
                                                 value={this.state.nombre}
                                             />
@@ -133,6 +148,7 @@ export default class Clientes extends Component {
                                                 placeholder="Contacto"
                                                 name="contacto"
                                                 onChange={this.onInputChange}
+                                                readOnly={this.state.input}
                                                 required
                                                 value={this.state.contacto}
                                             />
@@ -144,6 +160,7 @@ export default class Clientes extends Component {
                                                 placeholder="Domicilio"
                                                 name="domicilio"
                                                 onChange={this.onInputChange}
+                                                readOnly={this.state.input}
                                                 required
                                                 value={this.state.domicilio}
                                             />
@@ -155,6 +172,7 @@ export default class Clientes extends Component {
                                                 placeholder="Telefono"
                                                 name="telefono"
                                                 onChange={this.onInputChange}
+                                                readOnly={this.state.input}
                                                 required
                                                 value={this.state.telefono}
                                             />
@@ -166,6 +184,7 @@ export default class Clientes extends Component {
                                                 placeholder="Email"
                                                 name="email"
                                                 onChange={this.onInputChange}
+                                                readOnly={this.state.input}
                                                 required
                                                 value={this.state.email}
                                             />
@@ -183,11 +202,18 @@ export default class Clientes extends Component {
                                                 <option value="Transferencia Bancaria">Transferencia Bancaria</option>
                                             </select>
                                         </div>
-                                        <form onSubmit={this.onSubmit}>
-                                            <button type="submit" className="btn btn-primary">
-                                                Save
-                                            </button>
-                                        </form>
+                                        {(() => {
+                                            if (cookies.get('kind') === 'G') {
+                                                return (
+                                                    <form onSubmit={this.onSubmit}>
+                                                        <button type="submit" className="btn btn-primary">
+                                                            Save
+                                                         </button>
+                                                    </form>
+                                                )
+                                            }
+                                        })()}
+
                                     </div>
                                 </div>
                             </div>

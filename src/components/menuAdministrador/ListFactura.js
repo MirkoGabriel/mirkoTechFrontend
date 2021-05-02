@@ -120,7 +120,7 @@ export default class ListFactura extends Component {
                                             onClick={() => this.buscar(this.state.opcion)}
                                         >
                                             <option value="default">Seleccionar Busqueda</option>
-                                            <option value="nro">Número Remito</option>
+                                            <option value="nro">Número Factura</option>
                                             <option value="fecha">Fechas</option>
                                         </select>
                                     </div>

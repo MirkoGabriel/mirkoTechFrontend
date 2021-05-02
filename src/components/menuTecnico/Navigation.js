@@ -38,6 +38,7 @@ export default class Navigation extends Component {
                             <div className="btn">
                                 <Link className="btn btn-light" to="/seguimiento">Seguimiento</Link>
                             </div>
+                            
                             <div className="btn">
                                 <Link className="btn btn-light" to="/stockTecnico">Stock</Link>
                             </div>
