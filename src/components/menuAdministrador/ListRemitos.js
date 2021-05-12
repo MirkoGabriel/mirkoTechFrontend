@@ -16,23 +16,38 @@ export default class ListRemitos extends Component {
         opcion: '',
         finalDate: '',
         startDate: '',
-        nroRemito:''
+        nroRemito: ''
     }
 
     async componentDidMount() {
         this.getRemitos()
     }
-    filter = async(nroRemito) => {
-        const res = await axios.get('http://localhost:8000/api/remito/'+parseInt(nroRemito));
-        console.log(res)
-        const data=[]
-        data.push(res.data)
-        this.setState({
-            remitos: data
+    filter = async (nroRemito) => {
+        await axios.get('http://localhost:8000/api/remito/' + parseInt(nroRemito)).then(res => {
+            // do stuff
+
+            console.log(res)
+            const data = []
+            data.push(res.data)
+            this.setState({
+                remitos: data
+            })
+
         })
+            .catch(err => {
+                // what now?
+                console.log(err);
+                this.getRemitos()
+                swal({
+                    text: 'No hay Remitos',
+                    icon: 'error'
+                })
+                
+            })
+
     }
     mirko = (date) => {
-        return date.substr(0,10)
+        return date.substr(0, 10)
     }
     async getRemitos() {
         const res = await axios.get('http://localhost:8000/api/remito/');
@@ -59,9 +74,9 @@ export default class ListRemitos extends Component {
 
         })
     }
-    filterFechas = async(start, final) => {
-        var ini =this.fechaString(start)
-        var fin =this.fechaString(final)
+    filterFechas = async (start, final) => {
+        var ini = this.fechaString(start)
+        var fin = this.fechaString(final)
         const res = await axios.get('http://localhost:8000/api/remito/?fecha1=' + ini + '&fecha2=' + fin);
         console.log(res.data)
         this.setState({
@@ -110,7 +125,7 @@ export default class ListRemitos extends Component {
                         <div>
                             <Navigation />
                             <div className="container p-4">
-                            <div className="row">
+                                <div className="row">
                                     <div className="form-group">
                                         <select
                                             className="form-control"
@@ -197,7 +212,7 @@ export default class ListRemitos extends Component {
                                                         <th>{remito.id}</th>
                                                         <th>{remito.oti.id}</th>
                                                         <th>{remito.oti.cliente.nombre}</th>
-                                                        <th>{this.mirko(remito.fechaIngreso)}</th>
+                                                        <th>{remito.fechaIngreso.substr(0, 10)}</th>
                                                         <th>
                                                             <div className="btn-group" role="group" aria-label="Basic mixed styles example">
                                                                 <button
@@ -206,7 +221,7 @@ export default class ListRemitos extends Component {
                                                                 >
                                                                     Delete
                                                                 </button>
-                                                                <Link className="btn btn-info" to={'/editRemito/'+remito.id}>
+                                                                <Link className="btn btn-info" to={'/editRemito/' + remito.id}>
                                                                     Edit
                                                                 </Link>
                                                             </div>

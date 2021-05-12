@@ -16,24 +16,36 @@ export default class ListFactura extends Component {
         opcion: '',
         finalDate: '',
         startDate: '',
-        nroFactura:''
+        nroFactura: ''
     }
     async componentDidMount() {
         this.getFacturas()
     }
 
-    filter = async(nroFactura) => {
-        const res = await axios.get('http://localhost:8000/api/factura/'+parseInt(nroFactura));
-        console.log(res)
-        const data=[]
-        data.push(res.data)
-        this.setState({
-            facturas: data
+    filter = async (nroFactura) => {
+        await axios.get('http://localhost:8000/api/factura/' + parseInt(nroFactura)).then(res => {
+            // do stuff
+            console.log(res)
+            const data = []
+            data.push(res.data)
+            this.setState({
+                facturas: data
+            })
         })
+            .catch(err => {
+                // what now?
+                console.log(err);
+                
+                swal({
+                    text: 'No hay Facturas',
+                    icon: 'error'
+                })
+                
+            })
     }
-    filterFechas = async(start, final) => {
-        var ini =this.fechaString(start)
-        var fin =this.fechaString(final)
+    filterFechas = async (start, final) => {
+        var ini = this.fechaString(start)
+        var fin = this.fechaString(final)
         const res = await axios.get('http://localhost:8000/api/factura/?fecha1=' + ini + '&fecha2=' + fin);
         console.log(res.data)
         this.setState({
@@ -49,7 +61,7 @@ export default class ListFactura extends Component {
         return ini
     }
     mirko = (date) => {
-        return date.substr(0,10)
+        return date.substr(0, 10)
     }
     async getFacturas() {
         const res = await axios.get('http://localhost:8000/api/factura/');
@@ -68,7 +80,7 @@ export default class ListFactura extends Component {
             this.setState({ flag: false })
         }
     }
-    
+
     onInputChange = e => {
 
         console.log(e.target.name, e.target.value)
@@ -197,7 +209,7 @@ export default class ListFactura extends Component {
                                                         <th>{factura.id}</th>
                                                         <th>{factura.oti.id}</th>
                                                         <th>{factura.oti.cliente.nombre}</th>
-                                                        <th>{factura.fechaIngreso.substr(0,10)}</th>
+                                                        <th>{factura.fechaIngreso.substr(0, 10)}</th>
                                                         <th>
                                                             <div className="btn-group" role="group" aria-label="Basic mixed styles example">
                                                                 <button
@@ -206,7 +218,7 @@ export default class ListFactura extends Component {
                                                                 >
                                                                     Delete
                                                                 </button>
-                                                                <Link className="btn btn-info" to={'/editFactura/'+factura.id}>
+                                                                <Link className="btn btn-info" to={'/editFactura/' + factura.id}>
                                                                     Edit
                                                                 </Link>
                                                             </div>

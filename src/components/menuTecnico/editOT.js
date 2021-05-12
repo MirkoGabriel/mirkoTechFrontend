@@ -47,6 +47,7 @@ export default class editOT extends Component {
 
     async getOT() {
         const res = await axios.get('http://localhost:8000/api/ordenTrabajo/' + parseInt(this.props.match.params.id))
+        console.log(res.data)
         console.log(res.data.descripcion)
         console.log(res.data.estadoPresupuesto)
         this.setState({
